@@ -1,0 +1,16 @@
+# Virtuális környezet
+.venv/
+venv/
+
+# Python gyorsítótár
+__pycache__/
+*.pyc
+
+# Tesztelési cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Helyi SQLite adatbázis fájlok
+*.db
+*.sqlite3
