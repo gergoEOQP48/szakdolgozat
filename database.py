@@ -36,12 +36,12 @@ def init_db():
 
 
 
-    def save_scraped_data(product_data: dict, target_price: int = 0):
-        conn = get_connection()
-        cursor = conn.cursor()
+def save_scraped_data(product_data: dict, target_price: int = 0):
+    conn = get_connection()
+    cursor = conn.cursor()
 
 
-        cursor.execute("""
+    cursor.execute("""
         INSERT INTO products (name, category, url, target_price)
         VALUES (?, ?, ?, ?)
         ON CONFLICT(name) DO UPDATE SET
@@ -58,11 +58,25 @@ def init_db():
     ))
 
 
-        cursor.execute("SELECT id FROM products WHERE name = ?", (product_data["name"],))
-        row = cursor.fetchone()
-        product_id = row["id"]
+    cursor.execute("SELECT id FROM products WHERE name = ?", (product_data["name"],))
+    row = cursor.fetchone()
+    product_id = row["id"]
 
 
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    for offer in product_data["offers"]:
+        cursor.execute("""
+            INSERT INTO price_history (product_id, shop_name, price, checked_at)
+            VALUES (?, ?, ?, ?)
+        """, (
+            product_id,
+            offer["shop"],
+            offer["price"],
+            current_time
+        ))
+
+    conn.commit()
+    conn.close()
 
     
