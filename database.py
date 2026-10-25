@@ -34,4 +34,27 @@ def init_db():
     conn.commit()
     conn.close()
 
+
+
+    def save_scraped_data(product_data: dict, target_price: int = 0):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+
+        cursor.execute("""
+        INSERT INTO products (name, category, url, target_price)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(name) DO UPDATE SET
+            url = excluded.url,
+            target_price = CASE 
+                WHEN excluded.target_price > 0 THEN excluded.target_price 
+                ELSE products.target_price 
+            END
+    """, (
+        product_data["name"],
+        product_data["category"],
+        product_data["url"],
+        target_price
+    ))
+
     
