@@ -58,6 +58,11 @@ def init_db():
     ))
 
 
-    cursor.execute("SELECT id FROM products WHERE name = ?", (product_data["name"],))
-    row = cursor.fetchone()
-    product_id = row["id"]
+        cursor.execute("SELECT id FROM products WHERE name = ?", (product_data["name"],))
+        row = cursor.fetchone()
+        product_id = row["id"]
+
+
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    
