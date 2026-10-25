@@ -57,4 +57,7 @@ def init_db():
         target_price
     ))
 
-    
+
+    cursor.execute("SELECT id FROM products WHERE name = ?", (product_data["name"],))
+    row = cursor.fetchone()
+    product_id = row["id"]
