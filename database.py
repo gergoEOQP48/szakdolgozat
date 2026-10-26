@@ -80,3 +80,21 @@ def save_scraped_data(product_data: dict, target_price: int = 0):
     conn.close()
 
     
+def get_price_history(product_name: str, days: int = 7):
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    time_limit = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
+
+    cursor.execute("""
+        SELECT ph.shop_name, ph.price, ph.checked_at
+        FROM price_history ph
+        JOIN products p ON ph.product_id = p.id
+        WHERE p.name = ? AND ph.checked_at >= ?
+        ORDER BY ph.checked_at ASC
+    """, (product_name, time_limit))
+
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
