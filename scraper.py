@@ -99,7 +99,7 @@ def parse_arukereso_html(html_content: str, url: str = "") -> dict:
         "offers": offers
     }
 
-def fetch_arukereso_product(url: str, delay_seconds: float = 3.5) -> dict:
+def get_arukereso_product(url: str, delay_seconds: float = 3.5) -> dict:
     time.sleep(delay_seconds)
     response = requests.get(url, headers=HEADERS, timeout=15)
     response.raise_for_status()
