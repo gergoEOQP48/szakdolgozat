@@ -25,3 +25,18 @@ def check_price_alerts(db_name="hardware_prices.db"):
         if target_price is None or target_price == 0:
             print(f"[INFO] '{name}' - Nincs megadva célár, kihagyva.")
             continue
+
+        cursor.execute("""
+            SELECT s.shop_name, o.price, o.checked_at
+            FROM offers o
+            JOIN shops s ON o.shop_id = s.id
+            WHERE o.product_id = ? 
+            ORDER BY o.checked_at DESC
+        """, (prod_id,))
+        
+        offers = cursor.fetchall()
+
+        if not offers:
+            continue
+
+            
