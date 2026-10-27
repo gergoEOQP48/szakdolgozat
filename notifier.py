@@ -55,4 +55,20 @@ def check_price_alerts(db_name="hardware_prices.db"):
 
         print(f"Termék: {name}")
         print(f"  -> Célár: {target_price:,} Ft | Legjobb aktuális ár: {cheapest_price:,} Ft ({cheapest_shop})")
-            
+
+
+        
+        if cheapest_price <= target_price:
+            print(f"ÁRLEESÉS!!!")
+            print(f" A(z) {name} most olcsóbb ({cheapest_price:,} Ft), mint a célárad ({target_price:,} Ft)!")
+            print((f"Elérhető itt: {cheapest_shop}\n"))
+            alert_count += 1
+        else:
+            diff = cheapest_price - target_price
+            print(f"Még drágább a célárnál {diff:,} Ft-tal.\n")
+
+    conn.close()
+    print(f"Ellenőrzés kész. Találatok száma a célár alatt: {alert_count}")
+
+if __name__ == "__main__":
+    check_price_alerts() 
