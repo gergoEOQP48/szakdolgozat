@@ -47,4 +47,12 @@ def check_price_alerts(db_name="hardware_prices.db"):
         if not latest_offers:
             continue
 
+
+        
+        cheapest_offer = min(latest_offers, key=lambda x: x[1])
+        cheapest_shop = cheapest_offer[0]
+        cheapest_price = cheapest_offer[1]
+
+        print(f"Termék: {name}")
+        print(f"  -> Célár: {target_price:,} Ft | Legjobb aktuális ár: {cheapest_price:,} Ft ({cheapest_shop})")
             
