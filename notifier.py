@@ -39,4 +39,12 @@ def check_price_alerts(db_name="hardware_prices.db"):
         if not offers:
             continue
 
+
+        
+        latest_date = offers[0][2]
+        latest_offers = [o for o in offers if o[2] == latest_date]
+
+        if not latest_offers:
+            continue
+
             
