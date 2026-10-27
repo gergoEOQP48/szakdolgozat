@@ -1,8 +1,26 @@
 import sqlite3
+import requests
+
+def send_discord_alert(webhook_url, message):
+    data = {
+        "content": message
+    }
+    try:
+        response = requests.post(webhook_url, json=data)
+        if response.status_code == 204 or response.status_code == 200:
+            print("[DISCORD] Értesítés sikeresen elküldve Discordra!")
+        else:
+            print(f"[HIBA] Discord hiba: {response.status_code}")
+    except Exception as e:
+        print(f"[HIBA] Nem sikerült elküldeni a Discord üzenetet: {e}")
+
+    
 
 def check_price_alerts(db_name="hardware_prices.db"):
     
     print("Értesítési rendszer futtatása: Árak ellenőrzése a célárak alapján...\n")
+
+    webhook_url = "https://discordapp.com/api/webhooks/1564687049246900316/r3LfyA4dykQLlptlAHSsh-RIGN-bMWOADdTLjKGZBW548jtQB9SW_ubohA64dEfR3iqF"
     
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
@@ -62,6 +80,11 @@ def check_price_alerts(db_name="hardware_prices.db"):
             print(f"ÁRLEESÉS!!!")
             print(f" A(z) {name} most olcsóbb ({cheapest_price:,} Ft), mint a célárad ({target_price:,} Ft)!")
             print((f"Elérhető itt: {cheapest_shop}\n"))
+
+            message = f"@everyone FIGYELEM! ÁRLEESÉS!\nA(z) **{name}** termék ára elérte a céláradat!\nLegjobb ár: **{cheapest_price:,} Ft**\nBolt: **{cheapest_shop}**\nCélár volt: {target_price:,} Ft"
+            send_discord_alert(webhook_url, message)
+
+
             alert_count += 1
         else:
             diff = cheapest_price - target_price
