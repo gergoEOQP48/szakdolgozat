@@ -2,8 +2,11 @@ import time
 import database
 import scraper
 import notifier
+import schedule
 
-def main():
+def run_price_tracker():
+
+    print("Automatikus árfigyelő futtatás kezdődik...")
     print("1. Adatbázis inicializálása...")
     database.init_db()
 
@@ -60,6 +63,18 @@ def main():
 
     print("\n5. Értesítési modul indítása...")
     notifier.check_price_alerts()
+
+def main():
+
+    print("A program a háttérben fut, és minden nap reggel 8:00-kor automatikusan ellenőrzi az árakat.")
+    
+    schedule.every().day.at("14:00").do(run_price_tracker)
+    
+    # run_price_tracker()
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
