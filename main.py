@@ -58,8 +58,10 @@ def main():
 
     print("\nMinden termék lekérdezése és mentése lefutott!")
 
+    print("\n5. Értesítési modul indítása...")
+    notifier.check_price_alerts()
+
 if __name__ == "__main__":
     main()
 
-    print("\n5. Értesítési modul indítása...")
-    notifier.check_price_alerts()
+    
