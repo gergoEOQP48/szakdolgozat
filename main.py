@@ -1,6 +1,7 @@
 import time
 import database
 import scraper
+import notifier
 
 def main():
     print("1. Adatbázis inicializálása...")
@@ -59,3 +60,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    print("\n5. Értesítési modul indítása...")
+    notifier.check_price_alerts()
