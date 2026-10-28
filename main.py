@@ -70,7 +70,7 @@ def main():
     
     schedule.every().day.at("14:00").do(run_price_tracker)
     
-    # run_price_tracker()
+    run_price_tracker()
 
     while True:
         schedule.run_pending()
