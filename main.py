@@ -37,7 +37,7 @@ def run_price_tracker():
                 if category == 'RAM':
                     target_price = 200000
                 elif category == 'CPU':
-                    target_price = 125000
+                    target_price = 135000
                 elif category == 'GPU':
                     target_price = 170000
                 else:

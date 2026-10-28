@@ -45,11 +45,10 @@ def check_price_alerts(db_name="hardware_prices.db"):
             continue
 
         cursor.execute("""
-            SELECT s.shop_name, o.price, o.checked_at
-            FROM offers o
-            JOIN shops s ON o.shop_id = s.id
-            WHERE o.product_id = ? 
-            ORDER BY o.checked_at DESC
+            SELECT shop_name, price, checked_at
+            FROM price_history
+            WHERE product_id = ? 
+            ORDER BY checked_at DESC
         """, (prod_id,))
         
         offers = cursor.fetchall()

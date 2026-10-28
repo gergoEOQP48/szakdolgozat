@@ -2,13 +2,28 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
+
+try:
+    import cloudscraper
+    HAS_CLOUDSCRAPER = True
+except ImportError:
+    HAS_CLOUDSCRAPER = False
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/128.0.0.0 Safari/537.36"
     ),
-    "Accept-Language": "hu-HU,hu;q=0.9"
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Language": "hu-HU,hu;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.google.com/",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Sec-Fetch-User": "?1"
 }
 
 TARGET_SHOPS = {
@@ -101,6 +116,19 @@ def parse_arukereso_html(html_content: str, url: str = "") -> dict:
 
 def get_arukereso_product(url: str, delay_seconds: float = 3.5) -> dict:
     time.sleep(delay_seconds)
-    response = requests.get(url, headers=HEADERS, timeout=15)
+
+    if HAS_CLOUDSCRAPER:
+        scraper_session = cloudscraper.create_scraper(
+            browser={
+                "browser": "chrome",
+                "platform": "windows",
+                "desktop": True
+            }
+        )
+        response = scraper_session.get(url, headers=HEADERS, timeout=15)
+    else:
+        session = requests.Session()
+        response = session.get(url, headers=HEADERS, timeout=15)
+        
     response.raise_for_status()
     return parse_arukereso_html(response.text, url=url)
