@@ -40,6 +40,15 @@ TARGET_SHOPS = {
     "foramax": "Foramax",
     "computer imperium": "Computer Imperium",
     "computerimperium": "Computer Imperium",
+    "mysoft": "MySoft",
+    "bluechip": "Bluechip",
+    "oázis": "Oázis Computer",
+    "oazis": "Oázis Computer",
+    "smartcom": "Smartcom",
+    "notebook": "Notebook.hu",
+    "notebook.hu": "Notebook.hu",
+    "firstshop": "FirstShop",
+    "first shop": "FirstShop",
 }
 
 def normalize_shop_name(raw_name: str) -> str | None:
