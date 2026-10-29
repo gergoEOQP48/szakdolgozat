@@ -63,7 +63,7 @@ def run_price_tracker():
                 else:
                     target_price = 230000
 
-                print(f"Mentés az adatbázisba (céltár: {target_price} Ft)...")
+                print(f"Mentés az adatbázisba (célár: {target_price} Ft)...")
                 database.save_scraped_data(product_data, target_price=target_price)
                 print("Adatok rögzítve.")
             else:
