@@ -29,7 +29,7 @@
         const shops = [...new Set(rawData.map(x => x.shop_name))];
         
         const datasets = shops.map((shop, i) => {
-            // Automatikusan kiszámol egy teljesen egyedi színt a boltok számának arányában
+            
             const hue = Math.round((i * 360) / shops.length);
             const color = `hsl(${hue}, 75%, 45%)`;
 
