@@ -17,20 +17,22 @@
         <h2>{{ product.name }}</h2>
         <p>Célár: {{ product.target_price }} Ft</p>
         
-        <div style="width: 100%; max-width: 850px; margin-top: 20px;">
+        <div style="width: 100%; max-width: 900px; margin-top: 20px;">
             <canvas id="myChart"></canvas>
         </div>
     </div>
 
     <script>
-        
         const rawData = {{ history_json | safe }};
 
         const labels = [...new Set(rawData.map(x => x.checked_at))];
         const shops = [...new Set(rawData.map(x => x.shop_name))];
         
         const datasets = shops.map((shop, i) => {
-            const colors = ['#0066cc', '#28a745', '#dc3545', '#ffc107', '#17a2b8'];
+            // Automatikusan kiszámol egy teljesen egyedi színt a boltok számának arányában
+            const hue = Math.round((i * 360) / shops.length);
+            const color = `hsl(${hue}, 75%, 45%)`;
+
             const data = labels.map(d => {
                 const found = rawData.find(x => x.checked_at === d && x.shop_name === shop);
                 return found ? found.price : null;
@@ -39,7 +41,8 @@
             return {
                 label: shop,
                 data: data,
-                borderColor: colors[i % colors.length],
+                borderColor: color,
+                backgroundColor: color,
                 fill: false,
                 tension: 0.1,
                 spanGaps: true
