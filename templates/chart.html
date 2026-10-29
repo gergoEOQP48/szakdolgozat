@@ -22,14 +22,19 @@
         </div>
     </div>
 
+    
+    <script type="application/json" id="history-data">
+        {{ history_json | safe }}
+    </script>
+
     <script>
-        const rawData = {{ history_json | safe }};
+        
+        const rawData = JSON.parse(document.getElementById('history-data').textContent);
 
         const labels = [...new Set(rawData.map(x => x.checked_at))];
         const shops = [...new Set(rawData.map(x => x.shop_name))];
         
         const datasets = shops.map((shop, i) => {
-            
             const hue = Math.round((i * 360) / shops.length);
             const color = `hsl(${hue}, 75%, 45%)`;
 
