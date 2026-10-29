@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Hardver Árfigyelő Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Hardver Árfigyelő Rendszer</h1>
+    <p>Aktuálisan figyelt termékek az adatbázisból:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Termék Neve</th>
+                <th>Kategória</th>
+                <th>Legjobb Ár</th>
+                <th>Legjobb Bolt</th>
+                <th>Célár</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td><a href="{{ product.url }}" target="_blank">{{ product.name }}</a></td>
+                <td>{{ product.category }}</td>
+                <td><strong>{{ product.best_price }} Ft</strong></td>
+                <td>{{ product.best_shop }}</td>
+                <td>{{ product.target_price }} Ft</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
