@@ -31,7 +31,7 @@
             {% for product in products %}
             <tr>
                 <td>{{ product.id }}</td>
-                <td><a href="{{ product.url }}" target="_blank">{{ product.name }}</a></td>
+                <td><a href="/product/{{ product.id }}">{{ product.name }}</a></td>
                 <td>{{ product.category }}</td>
                 <td><strong>{{ product.best_price }} Ft</strong></td>
                 <td>{{ product.best_shop }}</td>
