@@ -22,7 +22,6 @@ body {
     box-sizing: border-box;
 }
 
-
 .box {
     background-color: var(--card-bg);
     padding: 40px;
@@ -32,7 +31,6 @@ body {
     margin: 0 auto;
     border-top: 6px solid var(--primary);
 }
-
 
 h2 {
     font-size: 1.75rem;
@@ -52,14 +50,12 @@ p {
     margin-bottom: 24px;
 }
 
-
 a {
     color: var(--primary);
     text-decoration: none;
     font-weight: 600;
     transition: all 0.2s ease;
 }
-
 
 .box > p:first-child a {
     display: inline-block;
@@ -80,7 +76,6 @@ a {
     text-decoration: none;
 }
 
-
 table {
     width: 100%;
     border-collapse: separate;
@@ -99,7 +94,6 @@ th, td {
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
-
 
 th {
     background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
@@ -127,13 +121,11 @@ tbody tr:last-child td {
     border-bottom: none;
 }
 
-
 td:first-child {
     color: var(--text-muted);
     font-weight: 600;
     font-size: 0.85rem;
 }
-
 
 td:nth-child(2) a {
     display: inline-block;
@@ -145,14 +137,12 @@ td:nth-child(2) a:hover {
     transform: translateX(4px);
 }
 
-
 td:nth-child(3) {
     font-size: 0.8rem;
     font-weight: 700;
     color: #475569;
     text-transform: uppercase;
 }
-
 
 td strong {
     background-color: var(--price-bg);
@@ -165,18 +155,15 @@ td strong {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-
 td:nth-child(5) {
     font-weight: 600;
     color: #334155;
 }
 
-
 td:nth-child(6) {
     color: var(--text-muted);
     font-size: 0.9rem;
 }
-
 
 canvas {
     background-color: #ffffff;
@@ -184,4 +171,57 @@ canvas {
     border-radius: 12px;
     border: 1px solid var(--border-color);
     box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+
+.trend-card {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+    margin-bottom: 24px;
+    background-color: #f8fafc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.trend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.trend-header strong {
+    font-size: 1.05rem;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    color: #ffffff;
+    letter-spacing: 0.025em;
+}
+
+.bg-success { background-color: #16a34a; }
+.bg-danger { background-color: #dc2626; }
+.bg-secondary { background-color: #64748b; }
+
+.trend-details {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin: 6px 0;
+}
+
+.recommendation {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-color);
 }

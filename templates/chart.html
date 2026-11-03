@@ -3,32 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chart-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        .btn-reset-zoom {
+            background-color: #f8fafc;
+            color: var(--text-main, #333);
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-reset-zoom:hover {
+            background-color: var(--primary, #4f46e5);
+            color: #ffffff;
+            border-color: var(--primary, #4f46e5);
+        }
+    </style>
 </head>
 <body>
     <div class="box">
         <p><a href="/">&larr; Vissza</a></p>
         <h2>{{ product.name }}</h2>
         <p>Célár: {{ product.target_price }} Ft</p>
+
         
+        <div class="trend-card">
+            <div class="trend-header">
+                <strong>Ártrend és előrejelzés</strong>
+                <span class="badge bg-{{ analysis.badge_class }}">
+                    {{ analysis.trend }} ({{ analysis.percent_change }}%)
+                </span>
+            </div>
+            <div class="trend-details">
+                <strong>Legfrissebb ár:</strong> {{ "{:,.0f}".format(analysis.current_price) }} Ft
+                &nbsp;|&nbsp;
+                <strong>Várható ár a következő napokban:</strong> {{ "{:,.0f}".format(analysis.forecast_price) }} Ft
+            </div>
+            <div class="recommendation">
+                {{ analysis.recommendation }}
+            </div>
+        </div>
+
         <div style="width: 100%; max-width: 900px; margin-top: 20px;">
+            <div class="chart-controls">
+                <button id="resetZoomBtn" class="btn-reset-zoom">🔍 Zoom visszaállítása</button>
+            </div>
             <canvas id="myChart"></canvas>
         </div>
     </div>
 
-    
     <script type="application/json" id="history-data">
         {{ history_json | safe }}
     </script>
+    <script type="application/json" id="analysis-data">
+        {{ analysis | tojson | safe }}
+    </script>
 
     <script>
-        
         const rawData = JSON.parse(document.getElementById('history-data').textContent);
+        const analysis = JSON.parse(document.getElementById('analysis-data').textContent);
 
         const labels = [...new Set(rawData.map(x => x.checked_at))];
         const shops = [...new Set(rawData.map(x => x.shop_name))];
-        
+
         const datasets = shops.map((shop, i) => {
             const hue = Math.round((i * 360) / shops.length);
             const color = `hsl(${hue}, 75%, 45%)`;
@@ -49,11 +98,55 @@
             };
         });
 
+        const extendedLabels = [...labels];
+        if (analysis.trendline_points && analysis.trendline_points.length > 0) {
+            analysis.forecast_points.forEach((_, idx) => {
+                extendedLabels.push(`Becslés +${idx + 1}`);
+            });
+
+            const trendData = [...analysis.trendline_points, ...analysis.forecast_points];
+
+            datasets.push({
+                label: 'Trendvonal / Becslés',
+                data: trendData,
+                borderColor: '#e67e22',
+                borderDash: [6, 6],
+                pointRadius: 3,
+                fill: false,
+                tension: 0
+            });
+        }
+
         const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'line',
-            data: { labels: labels, datasets: datasets },
-            options: { responsive: true }
+            data: { labels: extendedLabels, datasets: datasets },
+            options: {
+                responsive: true,
+                plugins: {
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'x', 
+                            modifierKey: null
+                        },
+                        zoom: {
+                            wheel: {
+                                enabled: true
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'x' 
+                        }
+                    }
+                }
+            }
+        });
+
+        
+        document.getElementById('resetZoomBtn').addEventListener('click', () => {
+            chart.resetZoom();
         });
     </script>
 </body>

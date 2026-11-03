@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import sqlite3
 import json
+from analytics import calculate_price_trend
 
 app = Flask(__name__)
 
@@ -15,7 +16,13 @@ def index():
     
     data = []
     for row in items:
-        db.execute("SELECT shop_name, price FROM price_history WHERE product_id = ? ORDER BY checked_at DESC, price ASC LIMIT 1", (row["id"],))
+        db.execute("""
+            SELECT shop_name, price 
+            FROM price_history 
+            WHERE product_id = ? 
+            ORDER BY checked_at DESC, price ASC 
+            LIMIT 1
+        """, (row["id"],))
         price_row = db.fetchone()
         
         p = dict(row)
@@ -44,6 +51,7 @@ def product_chart(product_id):
         conn.close()
         return "A termék nem található", 404
         
+    
     db.execute("""
         SELECT shop_name, price, checked_at 
         FROM price_history 
@@ -51,11 +59,28 @@ def product_chart(product_id):
         ORDER BY checked_at ASC
     """, (product_id,))
     history = db.fetchall()
-    
     history_list = [dict(h) for h in history]
+
+    
+    db.execute("""
+        SELECT checked_at, MIN(price) AS price 
+        FROM price_history 
+        WHERE product_id = ? 
+        GROUP BY checked_at 
+        ORDER BY checked_at ASC
+    """, (product_id,))
+    best_price_history = [dict(h) for h in db.fetchall()]
+
+    
+    analysis = calculate_price_trend(best_price_history)
     
     conn.close()
-    return render_template("chart.html", product=product, history_json=json.dumps(history_list))
+    return render_template(
+        "chart.html", 
+        product=product, 
+        history_json=json.dumps(history_list),
+        analysis=analysis
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
