@@ -17,10 +17,11 @@ def index():
     data = []
     for row in items:
         db.execute("""
-            SELECT shop_name, price 
-            FROM price_history 
-            WHERE product_id = ? 
-            ORDER BY checked_at DESC, price ASC 
+            SELECT s.name AS shop_name, ph.price 
+            FROM price_history ph
+            JOIN shops s ON ph.shop_id = s.id
+            WHERE ph.product_id = ? 
+            ORDER BY ph.checked_at DESC, ph.price ASC 
             LIMIT 1
         """, (row["id"],))
         price_row = db.fetchone()
@@ -51,17 +52,16 @@ def product_chart(product_id):
         conn.close()
         return "A termék nem található", 404
         
-    
     db.execute("""
-        SELECT shop_name, price, checked_at 
-        FROM price_history 
-        WHERE product_id = ? 
-        ORDER BY checked_at ASC
+        SELECT s.name AS shop_name, ph.price, ph.checked_at 
+        FROM price_history ph
+        JOIN shops s ON ph.shop_id = s.id
+        WHERE ph.product_id = ? 
+        ORDER BY ph.checked_at ASC
     """, (product_id,))
     history = db.fetchall()
     history_list = [dict(h) for h in history]
 
-    
     db.execute("""
         SELECT checked_at, MIN(price) AS price 
         FROM price_history 
@@ -71,7 +71,6 @@ def product_chart(product_id):
     """, (product_id,))
     best_price_history = [dict(h) for h in db.fetchall()]
 
-    
     analysis = calculate_price_trend(best_price_history)
     
     conn.close()

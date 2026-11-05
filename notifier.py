@@ -14,17 +14,13 @@ def send_discord_alert(webhook_url, message):
     except Exception as e:
         print(f"[HIBA] Nem sikerült elküldeni a Discord üzenetet: {e}")
 
-    
-
 def check_price_alerts(db_name="hardware_prices.db"):
-    
     print("Értesítési rendszer futtatása: Árak ellenőrzése a célárak alapján...\n")
 
     webhook_url = "https://discordapp.com/api/webhooks/1564687049246900316/r3LfyA4dykQLlptlAHSsh-RIGN-bMWOADdTLjKGZBW548jtQB9SW_ubohA64dEfR3iqF"
     
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-
 
     cursor.execute("""
         SELECT p.id, p.name, p.category, p.target_price
@@ -45,10 +41,11 @@ def check_price_alerts(db_name="hardware_prices.db"):
             continue
 
         cursor.execute("""
-            SELECT shop_name, price, checked_at
-            FROM price_history
-            WHERE product_id = ? 
-            ORDER BY checked_at DESC
+            SELECT s.name AS shop_name, ph.price, ph.checked_at
+            FROM price_history ph
+            JOIN shops s ON ph.shop_id = s.id
+            WHERE ph.product_id = ? 
+            ORDER BY ph.checked_at DESC
         """, (prod_id,))
         
         offers = cursor.fetchall()
@@ -56,16 +53,12 @@ def check_price_alerts(db_name="hardware_prices.db"):
         if not offers:
             continue
 
-
-        
         latest_date = offers[0][2]
         latest_offers = [o for o in offers if o[2] == latest_date]
 
         if not latest_offers:
             continue
 
-
-        
         cheapest_offer = min(latest_offers, key=lambda x: x[1])
         cheapest_shop = cheapest_offer[0]
         cheapest_price = cheapest_offer[1]
@@ -73,16 +66,13 @@ def check_price_alerts(db_name="hardware_prices.db"):
         print(f"Termék: {name}")
         print(f"  -> Célár: {target_price:,} Ft | Legjobb aktuális ár: {cheapest_price:,} Ft ({cheapest_shop})")
 
-
-        
         if cheapest_price <= target_price:
             print(f"ÁRLEESÉS!!!")
             print(f" A(z) {name} most olcsóbb ({cheapest_price:,} Ft), mint a célárad ({target_price:,} Ft)!")
-            print((f"Elérhető itt: {cheapest_shop}\n"))
+            print(f"Elérhető itt: {cheapest_shop}\n")
 
             message = f"@everyone FIGYELEM! ÁRLEESÉS!\nA(z) **{name}** termék ára elérte a céláradat!\nLegjobb ár: **{cheapest_price:,} Ft**\nBolt: **{cheapest_shop}**\nCélár volt: {target_price:,} Ft"
             send_discord_alert(webhook_url, message)
-
 
             alert_count += 1
         else:
@@ -93,4 +83,4 @@ def check_price_alerts(db_name="hardware_prices.db"):
     print(f"Ellenőrzés kész. Találatok száma a célár alatt: {alert_count}")
 
 if __name__ == "__main__":
-    check_price_alerts() 
+    check_price_alerts()
